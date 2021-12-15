@@ -1,0 +1,7 @@
+stations: {}
+
+# Example of radio station cofiguration
+# stations:
+#   best_radio:  # machine-friendly name
+#     url: "https://example.org/stream.mp3"  # url of the radio stream
+#     name: "Best Radio"  # human friendly name
