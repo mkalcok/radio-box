@@ -1,6 +1,7 @@
+socket: "/var/run/radio-box/radio-box.pip"  # make sure this read/writable by user running the service
 stations: {}
 
-# Example of radio station cofiguration
+# Example of radio station configuration
 # stations:
 #   best_radio:  # machine-friendly name
 #     url: "https://example.org/stream.mp3"  # url of the radio stream
