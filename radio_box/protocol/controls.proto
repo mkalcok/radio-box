@@ -1,0 +1,37 @@
+syntax = "proto2";
+package radio_box;
+
+enum CommandType {
+  PLAY = 0;
+  STOP = 1;
+  SET_VOLUME = 2;
+  QUIT = 99;
+}
+
+
+message Play {
+  required CommandType type = 1;
+  required string station = 2;
+}
+
+message Stop {
+  required CommandType type = 1;
+}
+
+message SetVolume {
+  required CommandType type = 1;
+  required uint32 volume_level = 2;
+}
+
+message Quit{
+  required CommandType type = 1;
+}
+
+message Command {
+  oneof sub_command {
+    Play play = 1;
+    Stop stop = 2;
+    SetVolume set_volume = 3;
+    Quit quit = 4;
+  }
+}
