@@ -1,0 +1,11 @@
+[Unit]
+Description=RadioBox web service
+
+[Service]
+User={{ user }}
+Environment="FLASK_APP=radio_box.rest_api:create_app"
+ExecStart={{ venv_bin }}/python3 -m flask run
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

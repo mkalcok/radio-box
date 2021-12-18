@@ -1,0 +1,10 @@
+[Unit]
+Description=RadioBox service
+
+[Service]
+User={{ user }}
+ExecStart=/bin/bash -c '{{ venv_bin }}/radio-box-service'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
