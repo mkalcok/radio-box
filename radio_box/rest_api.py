@@ -1,6 +1,5 @@
 import yaml
-from flask import abort, jsonify, Flask, request, Response
-
+from flask import abort, jsonify, Flask, request, Response, send_from_directory
 from radio_box.common import (
     create_pipe,
     send_message,
@@ -14,7 +13,14 @@ def create_app(test_config=None):
         config = yaml.safe_load(conf)
 
     socket_path = create_pipe(config["socket"])
-    app = Flask(__name__)
+    app = Flask(__name__,
+                static_url_path='',
+                static_folder='static',
+                )
+
+    @app.route("/", methods=["GET"])
+    def index():
+        return send_from_directory("static", "index.html")
 
     @app.route("/play", methods=["POST"])
     def play():
@@ -36,6 +42,8 @@ def create_app(test_config=None):
 
     @app.route("/stations", methods=["GET"])
     def stations():
-        return jsonify({"stations": config["stations"]})
+        station_data = config["stations"]
+        all_stations = {key: value["name"] for key, value in station_data.items()}
+        return jsonify({"stations": all_stations})
 
     return app
