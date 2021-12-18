@@ -19,7 +19,7 @@ login again.
 Now the dependencies:
 ```
 sudo apt install --no-install-recommends vlc-bin vlc-plugin-base
-sudo apt install alsa-base
+sudo apt install alsa-base tinyproxy
 ```
 
 ---
