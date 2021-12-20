@@ -16,6 +16,7 @@ dev_requirements = [
     'pytest-env',
     'pytest-mock',
     'coverage',
+    'tox',
 ]
 
 setup(
