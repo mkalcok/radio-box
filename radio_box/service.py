@@ -1,10 +1,8 @@
 import argparse
-
 from typing import Dict, Optional
 
 import vlc
 import yaml
-
 from google.protobuf.message import DecodeError
 
 from radio_box.common import create_pipe
@@ -14,18 +12,19 @@ QUIT_ = False
 
 
 class Tuner:
-
     def __init__(self, stations: Dict[str, dict]) -> None:
         self.stations = stations
-        self.vlc = vlc.Instance('--input-repeat=-1', '-Idummy', '--aout=alsa')
+        self.vlc = vlc.Instance("--input-repeat=-1", "-Idummy", "--aout=alsa")
         self.player: vlc.MediaPlayer = self.vlc.media_player_new()
         self.active_media: Optional[vlc.Media] = None
 
     def set_station(self, station_name: str) -> None:
         station: dict = self.stations.get(station_name)
         if not station:
-            raise ValueError("Unknown station {}. Check config file to see if it's"
-                             "defined.".format(station_name))
+            raise ValueError(
+                "Unknown station {}. Check config file to see if it's"
+                "defined.".format(station_name)
+            )
 
         self.active_media: vlc.Media = self.vlc.media_new(station.get("url"))
         self.player.set_media(self.active_media)
@@ -49,17 +48,21 @@ def parse_args() -> argparse.Namespace:
     description = "Radio player for pre-configured Internet radios."
     parser = argparse.ArgumentParser(description=description)
 
-    parser.add_argument("-c", "--config", default="/etc/radio-box/conf.yaml",
-                        help="Config file path")
-    parser.add_argument("-s", "--socket",
-                        help="Communication socket with radio-box service.",
-                        required=False)
+    parser.add_argument(
+        "-c", "--config", default="/etc/radio-box/conf.yaml", help="Config file path"
+    )
+    parser.add_argument(
+        "-s",
+        "--socket",
+        help="Communication socket with radio-box service.",
+        required=False,
+    )
 
     return parser.parse_args()
 
 
 def process_command(message: controls.Command, tuner: Tuner):
-    message_type = message.WhichOneof('sub_command')
+    message_type = message.WhichOneof("sub_command")
     command = getattr(message, message_type)
 
     if command.type == controls.PLAY:
@@ -75,7 +78,7 @@ def process_command(message: controls.Command, tuner: Tuner):
 
 def run() -> None:
     args = parse_args()
-    with open(args.config, 'r') as conf:
+    with open(args.config, "r") as conf:
         config: dict = yaml.safe_load(conf)
 
     socket_ = args.socket or config["socket"]
@@ -88,7 +91,7 @@ def run() -> None:
 
     while not QUIT_:
         print("Waiting for commands")
-        with open(pipe_path, 'rb') as pipe:
+        with open(pipe_path, "rb") as pipe:
             message = controls.Command()
             try:
                 message.ParseFromString(pipe.read())
@@ -98,5 +101,5 @@ def run() -> None:
                 continue
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

@@ -8,6 +8,7 @@ requirements = [
 ]
 
 dev_requirements = [
+    'black',
     'isort',
     'mypy',
     'pylint',
@@ -16,7 +17,6 @@ dev_requirements = [
     'pytest-env',
     'pytest-mock',
     'coverage',
-    'tox',
 ]
 
 setup(
