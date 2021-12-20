@@ -1,9 +1,12 @@
+"""CLI client for controlling radio-box service."""
+
 import argparse
 from pathlib import Path
 
 import yaml
 
 from radio_box.common import (
+    common_argument_parser,
     create_pipe,
     make_message_play,
     make_message_quit,
@@ -17,19 +20,8 @@ QUIT = "quit"
 
 
 def parse_args() -> argparse.Namespace:
-    description = "Radio-box CLI client"
-    parser = argparse.ArgumentParser(description=description)
+    parser = common_argument_parser("Radio-box CLI client.")
     subparsers = parser.add_subparsers(title="commands", dest="subparser_command")
-
-    parser.add_argument(
-        "-c", "--config", default="/etc/radio-box/conf.yaml", help="Config file path"
-    )
-    parser.add_argument(
-        "-s",
-        "--socket",
-        help="Communication socket with radio-box service.",
-        required=False,
-    )
 
     play_parser = subparsers.add_parser(PLAY)
     play_parser.add_argument("station", help="Station name to play")

@@ -5,7 +5,7 @@ import vlc
 import yaml
 from google.protobuf.message import DecodeError
 
-from radio_box.common import create_pipe
+from radio_box.common import create_pipe, common_argument_parser
 from radio_box.protocol import controls_pb2 as controls
 
 QUIT_ = False
@@ -45,19 +45,7 @@ class Tuner:
 
 
 def parse_args() -> argparse.Namespace:
-    description = "Radio player for pre-configured Internet radios."
-    parser = argparse.ArgumentParser(description=description)
-
-    parser.add_argument(
-        "-c", "--config", default="/etc/radio-box/conf.yaml", help="Config file path"
-    )
-    parser.add_argument(
-        "-s",
-        "--socket",
-        help="Communication socket with radio-box service.",
-        required=False,
-    )
-
+    parser = common_argument_parser("Radio player for pre-configured Internet radios.")
     return parser.parse_args()
 
 
