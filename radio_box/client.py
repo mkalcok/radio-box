@@ -20,6 +20,7 @@ QUIT = "quit"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse CLI arguments of radio-box client."""
     parser = common_argument_parser("Radio-box CLI client.")
     subparsers = parser.add_subparsers(title="commands", dest="subparser_command")
 
@@ -33,23 +34,43 @@ def parse_args() -> argparse.Namespace:
 
 
 def play(socket_path: Path, station: str) -> None:
+    """Tell radio-box service to play selected station.
+
+    Supplied station name should be key of one of the stations defined in the
+    configuration file.
+
+    If another station already plays, its playback will be stopped and this station
+    will play instead.
+
+    :param socket_path: Path to named pipe on which the radio-box service listens.
+    :param station: Name of the station to play.
+    """
     message = make_message_play(station)
     send_message(socket_path, message)
 
 
 def stop(socket_path: Path) -> None:
+    """Tell radio-box service to stop current playback.
+
+    :param socket_path: Path to named pipe on which the radio-box service listens.
+    """
     message = make_message_stop()
     send_message(socket_path, message)
 
 
 def quit_(socket_path: Path) -> None:
+    """Tell radio-box service to quit completely, killing the service process.
+
+    :param socket_path: Path to named pipe on which the radio-box service listens.
+    """
     message = make_message_quit()
     send_message(socket_path, message)
 
 
 def main() -> None:
+    """Process cli command."""
     args = parse_args()
-    with open(args.config, "r") as conf:
+    with open(args.config, "r", encoding="utf8") as conf:
         config: dict = yaml.safe_load(conf)
 
     socket_ = args.socket or config["socket"]

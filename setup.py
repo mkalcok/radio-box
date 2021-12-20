@@ -9,6 +9,7 @@ requirements = [
 
 dev_requirements = [
     'black',
+    'flake8',
     'isort',
     'mypy',
     'pylint',
@@ -17,6 +18,8 @@ dev_requirements = [
     'pytest-env',
     'pytest-mock',
     'coverage',
+    'types-protobuf',
+    'types-PyYAML',
 ]
 
 setup(

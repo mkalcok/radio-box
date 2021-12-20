@@ -1,0 +1,4 @@
+[FORMAT]
+max-line-length=89
+[TYPECHECK]
+generated-members=radio_box.protocol.*
