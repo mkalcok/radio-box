@@ -80,6 +80,6 @@ def main() -> None:
     if command == STOP:
         stop(socket_)
     elif command == PLAY:
-        play(socket_, args.station)
+        play(socket_, station=args.station)
     elif command == QUIT:
         quit_(socket_)

@@ -42,7 +42,7 @@ def create_app(
 
         station = data.get("station", "")
         if station not in config["stations"]:
-            abort(Response(f"Station '{station}' not found", status=404))
+            abort(Response(f"Station '{station}' not found.", status=404))
 
         play_command = make_message_play(station)
         send_message(socket_path, play_command)

@@ -1,4 +1,8 @@
+[MASTER]
+ignore=radio_box/protocol
+
 [FORMAT]
 max-line-length=89
+
 [TYPECHECK]
 generated-members=radio_box.protocol.*

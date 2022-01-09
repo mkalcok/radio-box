@@ -28,9 +28,9 @@ class Tuner:
         """Initialize Tuner instance.
 
         The station parameter expects dict containing station configurations. The
-        format of the dict must be {'station_id': 'station_stream_url'}.
+        format of the dict must be {'station_id': {'url': 'station_stream_url'}}.
         Example:
-            {'best_radio': 'http://example.org/best_stream.mp3'}
+            {'best_radio': {'url': 'http://example.org/best_stream.mp3'}}
 
         :param stations: dict containing station configuration.
         """
@@ -92,7 +92,7 @@ def process_command(message: controls.Command, tuner: Tuner) -> None:
     :param message: Protobuf message containing command.
     :param tuner: Tuner instance
     """
-    message_type = message.WhichOneof("sub_command")
+    message_type = str(message.WhichOneof("sub_command"))
     command = getattr(message, message_type)
 
     if command.type == controls.PLAY:
@@ -102,7 +102,7 @@ def process_command(message: controls.Command, tuner: Tuner) -> None:
     elif command.type == controls.QUIT:
         global QUIT_  # pylint: disable=global-statement
         QUIT_ = True
-    else:
+    else:  # pragma: no cover
         print(f"Unknown command {message_type}")
 
 
@@ -127,10 +127,10 @@ def run() -> None:
             try:
                 message.ParseFromString(pipe.read())
                 process_command(message, tuner)
-            except DecodeError as exc:
+            except DecodeError as exc:  # pragma: no cover
                 print(f"Failed to parse message: {exc}")
                 continue
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     run()
