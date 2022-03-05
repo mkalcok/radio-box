@@ -24,8 +24,10 @@ sudo apt install alsa-base tinyproxy
 
 ---
 **NOTE**
+
 Option `--no-install-recommends` is required on headless system to ensure
 that entire desktop environment is not installed by `vlc-plugin-base` package.
+
 ---
 
 Verify that `alsa` detects your sound card by running
