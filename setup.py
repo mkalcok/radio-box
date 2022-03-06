@@ -26,7 +26,7 @@ dev_requirements = [
 
 setup(
     name='radio_box',
-    version='0.1',
+    version='1.0',
     description='Internet radio streaming tool.',
     author='Martin Kalcok',
     packages=find_packages(exclude=['tests*']),
