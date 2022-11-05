@@ -115,7 +115,7 @@ def test_main_actions(action: str, function: str, arguments: Dict, mocker):
     mock_args.socket = socket_
     mock_args.subparser_command = action
     for arg, value in arguments.items():
-        mock_args.__setattr__(arg, value)
+        setattr(mock_args, arg, value)
 
     mock_arg_parser = mocker.patch(
         "radio_box.client.parse_args", return_value=mock_args

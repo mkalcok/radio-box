@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 requirements = [
     "python-vlc",
     "pyyaml",
-    "protobuf",
+    "protobuf<4",
     "flask",
 ]
 
