@@ -42,7 +42,7 @@ class Tuner:
     def _set_station(self, station_id: str) -> None:
         """Change current station.
 
-        The 'station_id' parameter must be a key from self.stations dict.
+        The 'station_id' parameter must be a key from `self.stations` dict.
 
         :param station_id: ID of the new station to set as a current media.
         :raises ValueError: If supplied station_id is not found in self.stations.

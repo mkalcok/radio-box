@@ -1,4 +1,5 @@
 """Simple REST Api interface for controlling radio-box service."""
+import os
 from typing import Dict, Optional
 
 import yaml
@@ -16,16 +17,18 @@ def create_app(
     test_config: Optional[Dict] = None,  # pylint: disable=unused-argument
 ) -> Flask:
     """Initialize flask app."""
-    with open("/etc/radio-box/conf.yaml", "r", encoding="utf8") as conf:
+    conf_file = os.environ.get("RADIO_BOX_CONF") or "/etc/radio-box/conf.yaml"
+    static_folder = os.environ.get("RADIO_BOX_WEB_STATIC") or "static"
+    with open(conf_file, "r", encoding="utf8") as conf:
         config = yaml.safe_load(conf)
 
     socket_path = create_pipe(config["socket"])
-    app = Flask(__name__, static_url_path="", static_folder="static")
+    app = Flask(__name__, static_url_path="", static_folder=static_folder)
 
     @app.route("/", methods=["GET"])
     def index() -> Response:
         """Redirect root url to static frontend."""
-        return send_from_directory("static", "index.html")
+        return send_from_directory(static_folder, "index.html")
 
     @app.route("/play", methods=["POST"])
     def play() -> Response:
