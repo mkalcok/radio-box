@@ -1,0 +1,7 @@
+#!/bin/bash
+# Copy config file
+cp -r "$SNAP/config" "$SNAP_DATA/"
+
+# create dir for socket and update config file
+mkdir -p "$SNAP_COMMON/run"
+"$SNAP"/bin/yq -i '.socket = env(SNAP_COMMON) + "/run/radio-box.pipe"' "$SNAP_DATA"/config/radio-box.yaml

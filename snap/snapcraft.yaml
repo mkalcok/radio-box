@@ -1,0 +1,92 @@
+name: radio-box
+# Using core20 due to current lack of automatic ELF patching in core22
+# https://snapcraft.io/docs/linters-classic#heading--issues-auto
+base: core20
+version: '0.1'
+license: "Apache-2.0"
+source-code: "https://github.com/kalcok/radio-box.git"
+issues: "https://github.com/kalcok/radio-box/issues"
+summary: CLI tool and Web interface for Internet Radio streaming
+description: |
+  CLI tool and minimalistic Web interface that allows headless devices to
+  stream configurable set of internet radios. It's intended to be deployed on small
+  devices (like Raspberry Pi) that run headless operating system and are
+  connected to audio output.
+  Specific internet radio stations need to be first configured by user and then
+  they can be selected and started via exposed web interface.
+
+grade: stable
+confinement: strict
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+
+layout:
+  /usr/share/alsa:
+    # Without this mapping, alsa (and VLC) is not able to play audio
+    bind: $SNAP/usr/share/alsa
+
+apps:
+  radio-box:
+    # CLI tool
+    command: bin/radio-box -c $SNAP_DATA/config/radio-box.yaml
+  stream-service:
+    # Service that handles audio playback
+    command: bin/radio-box-service -c $SNAP_DATA/config/radio-box.yaml
+    daemon: simple
+    environment:
+      # by default VLC python bindings are not able to locate libvlc object in snap
+      PYTHON_VLC_LIB_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libvlc.so.5
+    plugs:
+      - network
+      - alsa
+  web-service:
+    # Service that handles Web interface and REST API
+    command: bin/radio-box-web
+    daemon: simple
+    environment:
+      PYTHONPATH: $SNAP/usr/lib/python3/dist-packages/
+      RADIO_BOX_WEB_STATIC: $SNAP/web-ui/
+      RADIO_BOX_CONF: $SNAP_DATA/config/radio-box.yaml
+      FLASK_APP: radio_box.rest_api:create_app
+    plugs:
+      - network-bind
+
+parts:
+  radio-box:
+    plugin: python
+    source: .
+    stage-packages:
+      - alsa-base
+      - vlc-bin
+      - vlc-plugin-base
+      - libgl1
+      - libglu1-mesa
+      - freeglut3
+      - gunicorn
+  web-interface:
+    plugin: dump
+    source: ./web-ui/
+    override-build: |
+      npm install --global yarn
+      set +u
+      if [[ -n $http_proxy ]]; then yarn config set httpProxy $http_proxy; fi
+      if [[ -n $https_proxy ]]; then yarn config set httpsProxy $https_proxy; fi
+      set -u
+      yarn install
+      yarn build
+      cp -r dist $SNAPCRAFT_PART_INSTALL/
+    organize:
+      dist: web-ui
+    stage-snaps:
+      - node
+  config:
+    plugin: dump
+    source: files/
+    organize:
+      radio_box_conf.default.yaml: config/radio-box.yaml
+      snap-tools/config-handler.sh: config-handler
+      snap-tools/web-wrapper.sh: bin/radio-box-web
+    stage-snaps:
+      - yq

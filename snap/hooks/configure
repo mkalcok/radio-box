@@ -1,0 +1,44 @@
+#!/bin/bash -e
+
+source "$SNAP"/config-handler
+
+
+handle_port_config()
+{
+  local port
+  port="$(get_port)"
+
+  # very simple port range validation
+  if ! expr "$port" : '^[0-9]\+$' > /dev/null || (( "$port" < 1 || "$port" > 65535 )) ; then
+          echo "\"$port\" is not a valid port" >&2
+          return 1
+  fi
+
+  # set new value
+  set_port "$port"
+}
+
+handle_address_config()
+{
+  local addr
+  addr="$(get_address)"
+
+  # set new value
+  set_address "$addr"
+}
+
+handle_workers_config()
+{
+  local workers
+  workers="$(get_workers)"
+
+  # set new value
+  set_workers "$workers"
+}
+
+handle_port_config
+handle_address_config
+handle_workers_config
+
+# Restart Web/API service to apply new config
+snapctl restart radio-box.web-service
